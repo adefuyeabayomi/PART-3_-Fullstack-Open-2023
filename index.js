@@ -3,7 +3,11 @@ const app = express();
 app.use(express.json())
 // add morgan
 const morgan = require("morgan");
-let logger = morgan("tiny");
+// create a morgan token
+morgan.token("bodyData",(req,res)=>{
+  return ["data attached to post request",JSON.stringify(req.body)]
+})
+let logger = morgan(':method :url :status :res[content-length] - :response-time ms :bodyData');
 app.use(logger)
 const PORT = 3001;
 const HOST = "localhost";
