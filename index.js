@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json())
 const PORT = 3001;
 const HOST = "localhost";
 // define the numbers array
@@ -93,18 +94,27 @@ app.get("/api/info",(req,res)=>{
     res.send(`<p>${responseText}</p>`);
 })
 // return the entry for a single person using the id;
-app.get("/api/person/:id",(req,res)=>{
+app.get("/api/persons/:id",(req,res)=>{
     let id = req.params.id;
     let contact = persons.find(x=> String(x.id) === id);
     console.log("contact",contact)
     res.send(`<p>${contact.name} : ${contact.number}</p>`)
 })
 // delete a single entry with the id;
-app.delete("/api/person/:id",(req,res)=>{
+app.delete("/api/persons/:id",(req,res)=>{
     let id = req.params.id;
     let newPersonsArray = persons.filter(x=> String(x.id) !== id);
     persons = newPersonsArray;
     res.send("deleted").status(204)
+})
+//add a single entry with a post request
+app.post("/api/persons",(req,res)=>{
+    let id = Math.round(Math.random() * 100000000000);
+    let data = req.body;
+    data.id = id;
+    persons.unshift(data);
+    console.log("req.body",req.body)
+    res.send("added").status(201);
 })
 
 app.listen(PORT,HOST,()=>{
