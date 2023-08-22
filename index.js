@@ -111,10 +111,19 @@ app.delete("/api/persons/:id",(req,res)=>{
 app.post("/api/persons",(req,res)=>{
     let id = Math.round(Math.random() * 100000000000);
     let data = req.body;
-    data.id = id;
-    persons.unshift(data);
-    console.log("req.body",req.body)
-    res.send("added").status(201);
+    if(!data.name || !data.number){
+        res.send({"error" : "both name and number must be added"})
+    }
+    else if(persons.find(x=>x.name === data.name)){
+        res.send({"error" : "user already exist, name must be unique"})
+    }
+    else {
+        data.id = id;
+        persons.unshift(data);
+        console.log("req.body",req.body)
+        res.send("added").status(201);
+    }
+
 })
 
 app.listen(PORT,HOST,()=>{
