@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3001;
 const HOST = "localhost";
 // define the numbers array
-const persons = [
+let persons = [
     {
       "id": 1,
       "name": "Arto Hellas",
@@ -96,7 +96,15 @@ app.get("/api/info",(req,res)=>{
 app.get("/api/person/:id",(req,res)=>{
     let id = req.params.id;
     let contact = persons.find(x=> String(x.id) === id);
+    console.log("contact",contact)
     res.send(`<p>${contact.name} : ${contact.number}</p>`)
+})
+// delete a single entry with the id;
+app.delete("/api/person/:id",(req,res)=>{
+    let id = req.params.id;
+    let newPersonsArray = persons.filter(x=> String(x.id) !== id);
+    persons = newPersonsArray;
+    res.send("deleted").status(204)
 })
 
 app.listen(PORT,HOST,()=>{
