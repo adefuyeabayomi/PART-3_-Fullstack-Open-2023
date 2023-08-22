@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 app.use(express.json())
+// add morgan
+const morgan = require("morgan");
+let logger = morgan("tiny");
+app.use(logger)
 const PORT = 3001;
 const HOST = "localhost";
 // define the numbers array
