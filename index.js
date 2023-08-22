@@ -86,6 +86,13 @@ app.get("/api/persons",(req,res)=>{
     console.log("[REQ_PARAMS]",req.params);
     res.send(persons);
 })
+// return the information of people currently in the phonebook
+app.get("/api/info",(req,res)=>{
+    let totalPersons = persons.length;
+    let responseText = `As at ${new Date()}, The phonebook has info for ${totalPersons} people`;
+    res.send(`<p>${responseText}</p>`);
+})
+
 app.listen(PORT,HOST,()=>{
     console.log(`server running on : http://${HOST}:${PORT}`);
 });
