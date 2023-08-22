@@ -92,6 +92,12 @@ app.get("/api/info",(req,res)=>{
     let responseText = `As at ${new Date()}, The phonebook has info for ${totalPersons} people`;
     res.send(`<p>${responseText}</p>`);
 })
+// return the entry for a single person using the id;
+app.get("/api/person/:id",(req,res)=>{
+    let id = req.params.id;
+    let contact = persons.find(x=> String(x.id) === id);
+    res.send(`<p>${contact.name} : ${contact.number}</p>`)
+})
 
 app.listen(PORT,HOST,()=>{
     console.log(`server running on : http://${HOST}:${PORT}`);
