@@ -35,15 +35,17 @@ app.get("/api/persons",(req,res,next)=>{
 })
 // return the information of people currently in the phonebook
 app.get("/api/info",(req,res,next)=>{
-    let totalPersons = 0;
-    let responseText = `As at ${new Date()}, The phonebook has info for ${totalPersons} people`;
-    res.send(`<p>${responseText}</p>`);
+    Person.countDocuments({}).then(count=>{
+      let responseText = `As at ${new Date()}, The phonebook has info for ${count} people`;
+      res.send(`<p>${responseText}</p>`);      
+    })
 })
 // return the entry for a single person using the id;
 app.get("/api/persons/:id",(req,res,next)=>{
     let id = req.params.id;
     Person.find({_id : id}).then(contact=>{
-      res.send(`<p>${contact.name} : ${contact.number}</p>`)      
+      console.log("GET ID",contact)
+      res.send(`<p>${contact[0].name} : ${contact[0].number}</p>`)      
     }).catch(err=>{
       next(err);
     })
