@@ -9,7 +9,7 @@ morgan.token("bodyData",(req,res)=>{
 })
 let logger = morgan(':method :url :status :res[content-length] - :response-time ms :bodyData');
 app.use(logger)
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const HOST = "localhost";
 // define the numbers array
 let persons = [
