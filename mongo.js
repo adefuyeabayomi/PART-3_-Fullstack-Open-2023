@@ -5,6 +5,7 @@ let {name,number} = {
     number : process.argv[4]
 }
 let dbURL = `mongodb+srv://adefuyeabayomi:${password}@cluster0.ppt7z.mongodb.net/FullstackTutorials?retryWrites=true&w=majority`;
+//let dbURL = `mongodb://yomidaniel:${password}@localhost:27017/?authMechanism=DEFAULT&authSource=fullstack_tutorial`
 mongoose.set('strictQuery',false)
 mongoose.connect(dbURL)
 let personSchema = {
