@@ -17,37 +17,47 @@ let logger = morgan(':method :url :status :res[content-length] - :response-time 
 app.use(logger)
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "localhost";
-
+//define and implement the error handling middle ware
+const errorHandlerMiddleware = function(error,request,response,next){
+  console.error(error.message)
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+  next(error)
+}
+app.use(errorHandlerMiddleware);
 // define the route to get all persons information
-app.get("/api/persons",(req,res)=>{
+app.get("/api/persons",(req,res,next)=>{
     console.log("[REQ_PARAMS]",req.params);
     Person.find({}).then(data=>{
       res.json(data)
-    })
+    }).catch(err=> next(err))
 })
 // return the information of people currently in the phonebook
-app.get("/api/info",(req,res)=>{
-    let totalPersons = persons.length;
+app.get("/api/info",(req,res,next)=>{
+    let totalPersons = 0;
     let responseText = `As at ${new Date()}, The phonebook has info for ${totalPersons} people`;
     res.send(`<p>${responseText}</p>`);
 })
 // return the entry for a single person using the id;
-app.get("/api/persons/:id",(req,res)=>{
+app.get("/api/persons/:id",(req,res,next)=>{
     let id = req.params.id;
-    let contact = persons.find(x=> String(x.id) === id);
-    console.log("contact",contact)
-    res.send(`<p>${contact.name} : ${contact.number}</p>`)
+    Person.find({_id : id}).then(contact=>{
+      res.send(`<p>${contact.name} : ${contact.number}</p>`)      
+    }).catch(err=>{
+      next(err);
+    })
 })
 // delete a single entry with the id;
-app.delete("/api/persons/:id",(req,res)=>{
+app.delete("/api/persons/:id",(req,res,next)=>{
     let id = req.params.id;
     Person.deleteOne({_id : id}).then((done=>{
       res.send("deleted").status(204)      
-    })).catch(err=>console.log(err.message))
+    })).catch(err=>next(err))
 
 })
 //add a single entry with a post request
-app.post("/api/persons",(req,res)=>{
+app.post("/api/persons",(req,res,next)=>{
     let id = Math.round(Math.random() * 100000000000);
     let data = req.body;
     if(!data.name || !data.number){
@@ -58,10 +68,9 @@ app.post("/api/persons",(req,res)=>{
         console.log("req.body",req.body)
         res.send("added").status(201);
       }).catch(err=>{
-        console.log(err.message)
+        next(err)
       }) 
     }
-
 })
 
 app.listen(PORT,HOST,()=>{
