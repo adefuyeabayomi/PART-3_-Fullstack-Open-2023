@@ -41,9 +41,10 @@ app.get("/api/persons/:id",(req,res)=>{
 // delete a single entry with the id;
 app.delete("/api/persons/:id",(req,res)=>{
     let id = req.params.id;
-    let newPersonsArray = persons.filter(x=> String(x.id) !== id);
-    persons = newPersonsArray;
-    res.send("deleted").status(204)
+    Person.deleteOne({_id : id}).then((done=>{
+      res.send("deleted").status(204)      
+    })).catch(err=>console.log(err.message))
+
 })
 //add a single entry with a post request
 app.post("/api/persons",(req,res)=>{
