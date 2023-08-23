@@ -3,6 +3,8 @@ const app = express();
 app.use(express.json());
 const cors = require("cors");
 app.use(cors())
+//serve static files from the build directory
+app.use(express.static("build"));
 // add morgan
 const morgan = require("morgan");
 // create a morgan token
