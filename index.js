@@ -52,14 +52,13 @@ app.post("/api/persons",(req,res)=>{
     if(!data.name || !data.number){
         res.send({"error" : "both name and number must be added"})
     }
-    else if(persons.find(x=>x.name === data.name)){
-        res.send({"error" : "user already exist, name must be unique"})
-    }
     else {
-        data.id = id;
-        persons.unshift(data);
+      const person = new Person(data).save().then((data)=>{
         console.log("req.body",req.body)
         res.send("added").status(201);
+      }).catch(err=>{
+        console.log(err.message)
+      }) 
     }
 
 })
