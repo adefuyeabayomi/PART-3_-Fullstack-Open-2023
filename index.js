@@ -19,13 +19,18 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "localhost";
 //define and implement the error handling middle ware
 const errorHandlerMiddleware = function(error,request,response,next){
-  console.error(error.message)
+  console.error("Error:",error.message)
   if (error.name === 'CastError') {
+    console.log("error is cast error")
     return response.status(400).send({ error: 'malformatted id' })
   } 
+  else if(error.name === 'ValidationError'){
+    console.log("error is validation error")
+    return response.status(400).json({ error: error.message })
+  }
   next(error)
 }
-app.use(errorHandlerMiddleware);
+
 // define the route to get all persons information
 app.get("/api/persons",(req,res,next)=>{
     console.log("[REQ_PARAMS]",req.params);
@@ -54,7 +59,7 @@ app.get("/api/persons/:id",(req,res,next)=>{
 app.put("/api/persons/:id",(req,res,next)=>{
   let id = req.params.id;
   let body = req.body;
-  Person.updateOne({_id:id},{number: body.number}).then(contact=>{
+  Person.updateOne({_id:id},{number: body.number},{ new: true, runValidators: true, context: 'query' }).then(contact=>{
     console.log("updated return", contact);
     res.send(`<p>Updated ${body.name} : ${body.number}</p>`)      
   }).catch(err=>{
@@ -84,6 +89,8 @@ app.post("/api/persons",(req,res,next)=>{
       }) 
     }
 })
+
+app.use(errorHandlerMiddleware);
 
 app.listen(PORT,HOST,()=>{
     console.log(`server running on : http://${HOST}:${PORT}`);
