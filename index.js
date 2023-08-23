@@ -48,13 +48,23 @@ app.get("/api/persons/:id",(req,res,next)=>{
       next(err);
     })
 })
+// update the entry for a single user
+app.put("/api/persons/:id",(req,res,next)=>{
+  let id = req.params.id;
+  let body = req.body;
+  Person.updateOne({_id:id},{number: body.number}).then(contact=>{
+    console.log("updated return", contact);
+    res.send(`<p>Updated ${body.name} : ${body.number}</p>`)      
+  }).catch(err=>{
+    next(err);
+  })
+})
 // delete a single entry with the id;
 app.delete("/api/persons/:id",(req,res,next)=>{
     let id = req.params.id;
     Person.deleteOne({_id : id}).then((done=>{
       res.send("deleted").status(204)      
     })).catch(err=>next(err))
-
 })
 //add a single entry with a post request
 app.post("/api/persons",(req,res,next)=>{
