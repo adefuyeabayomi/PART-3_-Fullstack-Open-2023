@@ -11,6 +11,7 @@ app.use(express.static("build"));
 const morgan = require("morgan");
 // create a morgan token
 morgan.token("bodyData",(req,res)=>{
+  res;
   return ["data attached to post request",JSON.stringify(req.body)]
 })
 let logger = morgan(':method :url :status :res[content-length] - :response-time ms :bodyData');
@@ -43,7 +44,7 @@ app.get("/api/info",(req,res,next)=>{
     Person.countDocuments({}).then(count=>{
       let responseText = `As at ${new Date()}, The phonebook has info for ${count} people`;
       res.send(`<p>${responseText}</p>`);      
-    })
+    }).catch(err=> next(err))
 })
 // return the entry for a single person using the id;
 app.get("/api/persons/:id",(req,res,next)=>{
@@ -70,18 +71,18 @@ app.put("/api/persons/:id",(req,res,next)=>{
 app.delete("/api/persons/:id",(req,res,next)=>{
     let id = req.params.id;
     Person.deleteOne({_id : id}).then((done=>{
+      console.log(done)
       res.send("deleted").status(204)      
     })).catch(err=>next(err))
 })
 //add a single entry with a post request
 app.post("/api/persons",(req,res,next)=>{
-    let id = Math.round(Math.random() * 100000000000);
     let data = req.body;
     if(!data.name || !data.number){
         res.send({"error" : "both name and number must be added"})
     }
     else {
-      const person = new Person(data).save().then((data)=>{
+      new Person(data).save().then(()=>{
         console.log("req.body",req.body)
         res.send("added").status(201);
       }).catch(err=>{

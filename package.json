@@ -7,6 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "db_test": "node mongo.js",
+    "lint": "npm eslint index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,6 +20,8 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-plugin-react": "^7.33.2",
     "nodemon": "^3.0.1"
   }
 }
